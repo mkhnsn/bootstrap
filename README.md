@@ -48,7 +48,7 @@ If something feels “too fancy” for a bootstrapper, it probably belongs in th
 
 This bootstrap repo provides **two entry points** depending on your situation:
 
-```
+```text
 Fresh Machine / Unknown Environment
 │
 ├─ minimal.sh ──────────→ Working shell (self-contained)
@@ -58,7 +58,7 @@ Fresh Machine / Unknown Environment
 
 ### minimal.sh
 
-**Standalone bootstrap to a working shell**
+#### Standalone bootstrap to a working shell
 
 - No dependencies or assumptions
 - No private repo access required
@@ -75,7 +75,7 @@ exec zsh
 
 ### full.sh
 
-**Complete machine setup with dotfiles**
+#### Complete machine setup with dotfiles
 
 - Requires GitHub access to private dotfiles repo
 - Installs chezmoi and applies all dotfiles
@@ -96,7 +96,7 @@ exec zsh
 
 **These scripts are generated.** The actual source code lives in the dotfiles repository:
 
-```
+```text
 dotfiles/scripts/
 ├── templates/
 │   ├── minimal.sh.template
