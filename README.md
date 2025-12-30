@@ -10,6 +10,21 @@ All real configuration lives in the dotfiles repo. This repo only gets you _to_ 
 
 ---
 
+## ⚠️ Generated Files
+
+The scripts in this repository (`minimal.sh`, `full.sh`) are **generated** from templates in the dotfiles repository.
+
+**Do not edit these scripts directly.** To update them:
+
+1. Edit the templates in `dotfiles/scripts/templates/`
+2. Run `make bootstrap-scripts` in dotfiles
+3. The generator copies updated scripts here
+4. Commit both repos
+
+See [dotfiles/BOOTSTRAP_GENERATION.md](https://github.com/mkhnsn/dotfiles/blob/main/BOOTSTRAP_GENERATION.md) for details.
+
+---
+
 ## What this repo is (and is not)
 
 ### This repo **is**
@@ -29,26 +44,68 @@ If something feels “too fancy” for a bootstrapper, it probably belongs in th
 
 ---
 
-## Mental model
+## Architecture
 
-There are **three layers**, each with a clearly defined responsibility.
+This bootstrap repo provides **two entry points** depending on your situation:
 
-```mermaid
-flowchart TD
-    A[Fresh machine / environment] --> B[minimal.sh<br/>Parachute]
-    B --> C[install.sh<br/>Canonical entrypoint]
-    C --> D[chezmoi]
-    D --> E[Private dotfiles repo]
-    E --> F[Shell, tools, editors, configs]
-
-    style B fill:#e7f5ff,stroke:#1c7ed6
-    style C fill:#fff3bf,stroke:#f08c00
-    style D fill:#ebfbee,stroke:#2f9e44
+```
+Fresh Machine / Unknown Environment
+│
+├─ minimal.sh ──────────→ Working shell (self-contained)
+│
+└─ full.sh ─────────────→ Complete setup (requires dotfiles access)
 ```
 
-- **minimal.sh**: gets you to a working `chezmoi` with the fewest assumptions possible
-- **install.sh**: the single, canonical entrypoint for applying dotfiles
-- **chezmoi**: owns _all_ real configuration, secrets, and platform logic
+### minimal.sh
+
+**Standalone bootstrap to a working shell**
+
+- No dependencies or assumptions
+- No private repo access required
+- Works on macOS and Linux
+- Output: git, curl, zsh, basic shell config
+- Use when: Fresh machine, unsure what's installed, CI/containers
+
+**Example:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mkhnsn/bootstrap/main/minimal.sh | bash
+exec zsh
+```
+
+### full.sh
+
+**Complete machine setup with dotfiles**
+
+- Requires GitHub access to private dotfiles repo
+- Installs chezmoi and applies all dotfiles
+- Installs Homebrew and packages (macOS)
+- Output: Full configuration, all tools, all settings
+- Use when: Personal machine setup, you have repo access
+
+**Example:**
+
+```bash
+bash full.sh
+exec zsh
+```
+
+---
+
+## Source of Truth
+
+**These scripts are generated.** The actual source code lives in the dotfiles repository:
+
+```
+dotfiles/scripts/
+├── templates/
+│   ├── minimal.sh.template
+│   └── full.sh.template
+├── generate-bootstrap.sh
+└── Makefile
+```
+
+To update the scripts: edit the templates, run `make bootstrap-scripts`, commit both repos.
 
 ---
 
